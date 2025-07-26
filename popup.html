@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Join Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      width: 200px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    select {
+      width: 100%;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Smart Join</h3>
+
+  <label for="language">Language:</label>
+  <select id="language">
+    <option value="en">English</option>
+    <option value="tr">Türkçe</option>
+    <option value="nl">Nederlands</option>
+  </select>
+
+  <script>
+    const languageSelect = document.getElementById('language');
+
+    chrome.storage.sync.get(['language'], function(data) {
+      if (data.language) {
+        languageSelect.value = data.language;
+      }
+    });
+
+    languageSelect.addEventListener('change', function() {
+      chrome.storage.sync.set({ language: this.value });
+    });
+  </script>
+</body>
+</html>
