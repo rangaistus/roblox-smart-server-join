@@ -1,0 +1,29 @@
+{
+    "extensionName": {
+        "message": "Slimme Server Betreden"
+    },
+    "extensionDescription": {
+        "message": "Sluit aan bij de Roblox-server met de laagste ping zonder je vrienden."
+    },
+    "joinSmart": {
+        "message": "Slimme Server Betreden"
+    },
+    "searching": {
+        "message": "Zoeken…"
+    },
+    "noPlaceId": {
+        "message": "Kon geen plaats-ID vinden."
+    },
+    "noServer": {
+        "message": "Geen geschikte server gevonden."
+    },
+    "launcherNotFound": {
+        "message": "Roblox-launcher niet gevonden."
+    },
+    "popupHeading": {
+        "message": "Slimme Join"
+    },
+    "popupLanguageLabel": {
+        "message": "Taal:"
+    }
+}

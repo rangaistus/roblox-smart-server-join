@@ -1,0 +1,29 @@
+{
+    "extensionName": {
+        "message": "Roblox Akıllı Sunucuya Katıl"
+    },
+    "extensionDescription": {
+        "message": "Düşük pingli Roblox sunucusuna arkadaşlarınız olmadan katılın."
+    },
+    "joinSmart": {
+        "message": "Akıllı Sunucuya Katıl"
+    },
+    "searching": {
+        "message": "Aranıyor…"
+    },
+    "noPlaceId": {
+        "message": "Oyun kimliği bulunamadı."
+    },
+    "noServer": {
+        "message": "Uygun sunucu bulunamadı."
+    },
+    "launcherNotFound": {
+        "message": "Roblox başlatıcısı bulunamadı."
+    },
+    "popupHeading": {
+        "message": "Akıllı Sunucu"
+    },
+    "popupLanguageLabel": {
+        "message": "Dil:"
+    }
+}

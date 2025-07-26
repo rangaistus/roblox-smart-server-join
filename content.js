@@ -15,49 +15,13 @@
         });
     }
 
-    const translations = {
-        en: {
-            joinSmart: "Join Smart Server",
-            noPlaceId: "Could not find placeId.",
-            noServer: "No suitable server found.",
-            launcherNotFound: "Roblox launcher not found."
-        },
-        tr: {
-            joinSmart: "Akıllı Sunucuya Katıl",
-            noPlaceId: "Oyun kimliği bulunamadı.",
-            noServer: "Uygun sunucu bulunamadı.",
-            launcherNotFound: "Roblox başlatıcısı bulunamadı."
-        },
-        nl: {
-            joinSmart: "Slimme Server Betreden",
-            noPlaceId: "Kon geen plaats-ID vinden.",
-            noServer: "Geen geschikte server gevonden.",
-            launcherNotFound: "Roblox launcher niet gevonden."
-        }
-    };
+    const msg = key => chrome.i18n.getMessage(key);
 
-    // 1) load initial language and get its `t`
-    const initialLang = await new Promise(r =>
-        chrome.storage.sync.get(['language'], data => r(data.language || 'en'))
-    );
-    let t = translations[initialLang];
-
-    // 2) set up listener so changing the dropdown updates our button live
-    let joinBtn;
-    chrome.storage.onChanged.addListener((changes, area) => {
-        if (area === 'sync' && changes.language) {
-            const newLang = changes.language.newValue || 'en';
-            t = translations[newLang];
-            if (joinBtn) joinBtn.innerText = t.joinSmart;
-        }
-    });
-
-    // 3) now wait for the play-button container, then create *one* button
     try {
         const container = await waitForElement(".game-details-play-button-container");
 
-        joinBtn = document.createElement("button");
-        joinBtn.innerText = t.joinSmart;
+        const joinBtn = document.createElement("button");
+        joinBtn.innerText = msg("joinSmart");
         Object.assign(joinBtn.style, {
             marginTop: "10px",
             width: "100%",
@@ -69,31 +33,38 @@
             cursor: "pointer",
             fontWeight: "bold"
         });
-
         container.parentElement.insertBefore(joinBtn, container.nextSibling);
 
-        joinBtn.addEventListener('click', async () => {
+        joinBtn.addEventListener("click", async () => {
+            joinBtn.disabled = true;
+            joinBtn.innerText = msg("searching");
             const m = window.location.pathname.match(/\/games\/(\d+)/);
-            if (!m) return alert(t.noPlaceId);
+            if (!m) {
+                alert(msg("noPlaceId"));
+                return;
+            }
             const placeId = m[1];
 
             try {
                 const userId = await getCurrentUserId();
                 const friendIds = await getFriendUserIds(userId);
                 const best = await findBestServer(placeId, friendIds);
-                if (!best) return alert(t.noServer);
-
-                const script = document.createElement('script');
-                script.src = chrome.runtime.getURL('inject.js');
-                script.dataset.smartJoin = JSON.stringify({ placeId, gameId: best.id });
-                document.body.appendChild(script);
-
+                if (!best) {
+                    alert(msg("noServer"));
+                } else {
+                    const script = document.createElement("script");
+                    script.src = chrome.runtime.getURL("inject.js");
+                    script.dataset.smartJoin = JSON.stringify({ placeId, gameId: best.id });
+                    document.body.appendChild(script);
+                }
             } catch (err) {
                 console.error("Smart-join failed", err);
-                alert(t.noServer);
+                alert(msg("launcherNotFound"));
+            } finally {
+                joinBtn.disabled = false;
+                joinBtn.innerText = msg("joinSmart");
             }
         });
-
     } catch (e) {
         console.error("Failed to inject smart join button:", e);
     }

@@ -1,0 +1,29 @@
+{
+    "extensionName": {
+        "message": "Roblox Smart Server Join"
+    },
+    "extensionDescription": {
+        "message": "Join the lowest-ping Roblox public server without your friends."
+    },
+    "joinSmart": {
+        "message": "Join Smart Server"
+    },
+    "searching": {
+        "message": "Searching…"
+    },
+    "noPlaceId": {
+        "message": "Could not find placeId."
+    },
+    "noServer": {
+        "message": "No suitable server found."
+    },
+    "launcherNotFound": {
+        "message": "Roblox launcher not found."
+    },
+    "popupHeading": {
+        "message": "Smart Join"
+    },
+    "popupLanguageLabel": {
+        "message": "Language:"
+    }
+}
