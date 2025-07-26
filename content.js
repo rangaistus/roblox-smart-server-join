@@ -51,7 +51,7 @@
     joinButton.style.width = "100%";
     joinButton.style.padding = "10px";
     joinButton.style.fontSize = "14px";
-    joinButton.style.backgroundColor = "#ffcc00";
+    joinButton.style.backgroundColor = "#335fff";
     joinButton.style.border = "none";
     joinButton.style.borderRadius = "6px";
     joinButton.style.cursor = "pointer";
