@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Smart Join Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- give these ids so we can update their text -->
+    <h3 id="heading">Smart Join</h3>
+    <label id="langLabel" for="language">Language:</label>
+    <select id="language">
+        <option value="en">English</option>
+        <option value="tr">Türkçe</option>
+        <option value="nl">Nederlands</option>
+    </select>
+    <script src="popup.js"></script>
+</body>
+
+</html>

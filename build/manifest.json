@@ -1,0 +1,49 @@
+{
+    "manifest_version": 3,
+    "name": "Roblox Smart Server Join",
+    "version": "1.0",
+    "description": "Join the lowest ping Roblox public server without your friends.",
+    "permissions": [
+        "scripting",
+        "activeTab",
+        "storage"
+    ],
+    "host_permissions": [
+        "https://games.roblox.com/*",
+        "https://friends.roblox.com/*",
+        "https://users.roblox.com/*",
+        "https://www.roblox.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.roblox.com/games/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "inject.js",
+                "popup.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}
