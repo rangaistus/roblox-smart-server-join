@@ -41,6 +41,8 @@
             const m = window.location.pathname.match(/\/games\/(\d+)/);
             if (!m) {
                 alert(msg("noPlaceId"));
+                joinBtn.disabled = false;
+                joinBtn.innerText = msg("joinSmart");
                 return;
             }
             const placeId = m[1];
@@ -59,7 +61,7 @@
                 }
             } catch (err) {
                 console.error("Smart-join failed", err);
-                alert(msg("launcherNotFound"));
+                alert(msg("noServer"));
             } finally {
                 joinBtn.disabled = false;
                 joinBtn.innerText = msg("joinSmart");
