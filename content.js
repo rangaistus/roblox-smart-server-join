@@ -1,4 +1,4 @@
-(async function() {
+(async function () {
   function waitForElement(selector, timeout = 10000) {
     return new Promise((resolve, reject) => {
       const interval = setInterval(() => {
@@ -15,9 +15,9 @@
     });
   }
 
-  const language = await new Promise(resolve => {
-    chrome.storage.sync.get(['language'], function(data) {
-      resolve(data.language || 'en');
+  const language = await new Promise((resolve) => {
+    chrome.storage.sync.get(["language"], function (data) {
+      resolve(data.language || "en");
     });
   });
 
@@ -25,26 +25,36 @@
     en: {
       joinSmart: "Join Smart Server",
       noPlaceId: "Could not find placeId.",
-      noServer: "No suitable server found."
+      noServer: "No suitable server found.",
+      launcherNotFound: "Roblox launcher not found."
     },
     tr: {
       joinSmart: "Akıllı Sunucuya Katıl",
       noPlaceId: "Oyun kimliği bulunamadı.",
-      noServer: "Uygun sunucu bulunamadı."
+      noServer: "Uygun sunucu bulunamadı.",
+      launcherNotFound: "Roblox başlatıcısı bulunamadı."
     },
     nl: {
       joinSmart: "Slimme Server Betreden",
       noPlaceId: "Kon geen plaats-ID vinden.",
-      noServer: "Geen geschikte server gevonden."
-    }
+      noServer: "Geen geschikte server gevonden.",
+      launcherNotFound: "Roblox launcher niet gevonden."
+    },
   };
 
   const t = translations[language];
 
+  function getPlaceIdFromUrl() {
+    const match = window.location.pathname.match(/\/games\/(\d+)/);
+    return match ? match[1] : null;
+  }
+
   try {
+    const placeId = getPlaceIdFromUrl();
+    if (!placeId) return alert(t.noPlaceId);
+
     const container = await waitForElement(".game-details-play-button-container");
 
-    // Create the button
     const joinButton = document.createElement("button");
     joinButton.innerText = t.joinSmart;
     joinButton.style.marginTop = "10px";
@@ -60,23 +70,44 @@
     container.parentElement.insertBefore(joinButton, container.nextSibling);
 
     joinButton.onclick = async () => {
-      const placeIdMatch = window.location.href.match(/games\/(\d+)/);
-      if (!placeIdMatch) return alert(t.noPlaceId);
-      const placeId = placeIdMatch[1];
+      try {
+        const userId = await getCurrentUserId();
+        const friendIds = await getFriendUserIds(userId);
+        const servers = await getPublicServers(placeId);
 
-      const userId = await getCurrentUserId();
-      const friends = await getFriendUserIds(userId);
-      const servers = await getPublicServers(placeId);
+        // Sunucuları filtrele
+        const filtered = servers.filter(s => {
+          const players = s.playerTokens || [];
+          return players.length < s.maxPlayers &&
+            (!s.players || !s.players.some(p => friendIds.includes(p.id)));
+        });
 
-      const bestServer = servers
-        .filter(s => !s.players?.some(p => friends.includes(p.id)))
-        .sort((a, b) => a.ping - b.ping)[0];
+        const sorted = filtered.sort((a, b) => a.ping - b.ping);
+        const bestServer = sorted[0];
 
-      if (!bestServer) return alert(t.noServer);
+        if (!bestServer) return alert(t.noServer);
 
-      const url = `roblox://join?placeId=${placeId}&gameId=${bestServer.id}`;
-      window.location.href = url;
+        injectAndJoin(placeId, bestServer.id);
+      } catch (e) {
+        console.error("Join error:", e);
+        alert(t.noServer);
+      }
     };
+
+    function injectAndJoin(placeId, gameId) {
+      const script = document.createElement("script");
+      script.textContent = `
+        setTimeout(() => {
+          if (typeof Roblox !== 'undefined' && Roblox.GameLauncher) {
+            Roblox.GameLauncher.joinGameInstance(${placeId}, "${gameId}");
+          } else {
+            alert("${t.launcherNotFound}");
+          }
+        }, 500);
+      `;
+      document.body.appendChild(script);
+    }
+
   } catch (e) {
     console.error("Failed to inject smart join button:", e);
   }
